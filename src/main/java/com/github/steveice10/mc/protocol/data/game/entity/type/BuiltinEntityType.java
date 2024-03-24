@@ -136,11 +136,6 @@ public enum BuiltinEntityType implements EntityType {
     private static final EntityType[] VALUES = values();
 
     @Override
-    public String getName() {
-        return this.name();
-    }
-
-    @Override
     public int getId() {
         return this.ordinal();
     }
