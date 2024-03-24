@@ -3,6 +3,8 @@ package com.github.steveice10.mc.protocol.packet.ingame.clientbound.entity.spawn
 import com.github.steveice10.mc.protocol.codec.MinecraftCodecHelper;
 import com.github.steveice10.mc.protocol.codec.MinecraftPacket;
 import com.github.steveice10.mc.protocol.data.game.entity.object.*;
+import com.github.steveice10.mc.protocol.data.game.entity.type.BuiltinEntityType;
+import com.github.steveice10.mc.protocol.data.game.entity.type.CustomEntityType;
 import com.github.steveice10.mc.protocol.data.game.entity.type.EntityType;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
@@ -61,18 +63,18 @@ public class ClientboundAddEntityPacket implements MinecraftPacket {
         this.headYaw = in.readByte() * 360 / 256f;
 
         int data = helper.readVarInt(in);
-        if (this.type == EntityType.MINECART) {
+        if (this.type == BuiltinEntityType.MINECART) {
             this.data = MinecartType.from(data);
-        } else if (this.type == EntityType.ITEM_FRAME || this.type == EntityType.GLOW_ITEM_FRAME || this.type == EntityType.PAINTING) {
+        } else if (this.type == BuiltinEntityType.ITEM_FRAME || this.type == BuiltinEntityType.GLOW_ITEM_FRAME || this.type == BuiltinEntityType.PAINTING) {
             this.data = Direction.VALUES[data];
-        } else if (this.type == EntityType.FALLING_BLOCK) {
+        } else if (this.type == BuiltinEntityType.FALLING_BLOCK) {
             this.data = new FallingBlockData(data & 65535, data >> 16);
-        } else if (this.type == EntityType.POTION) {
+        } else if (this.type == BuiltinEntityType.POTION) {
             this.data = new SplashPotionData(data);
-        } else if (this.type == EntityType.SPECTRAL_ARROW || this.type == EntityType.FIREBALL || this.type == EntityType.SMALL_FIREBALL
-                || this.type == EntityType.DRAGON_FIREBALL || this.type == EntityType.WITHER_SKULL || this.type == EntityType.FISHING_BOBBER) {
+        } else if (this.type == BuiltinEntityType.SPECTRAL_ARROW || this.type == BuiltinEntityType.FIREBALL || this.type == BuiltinEntityType.SMALL_FIREBALL
+                || this.type == BuiltinEntityType.DRAGON_FIREBALL || this.type == BuiltinEntityType.WITHER_SKULL || this.type == BuiltinEntityType.FISHING_BOBBER) {
             this.data = new ProjectileData(data);
-        } else if (this.type == EntityType.WARDEN) {
+        } else if (this.type == BuiltinEntityType.WARDEN) {
             this.data = new WardenData(data);
         } else {
             if (data == 0) {
@@ -91,7 +93,7 @@ public class ClientboundAddEntityPacket implements MinecraftPacket {
     public void serialize(ByteBuf out, MinecraftCodecHelper helper) throws IOException {
         helper.writeVarInt(out, this.entityId);
         helper.writeUUID(out, this.uuid);
-        helper.writeVarInt(out, this.type.ordinal());
+        helper.writeVarInt(out, this.type.getId());
         out.writeDouble(this.x);
         out.writeDouble(this.y);
         out.writeDouble(this.z);
